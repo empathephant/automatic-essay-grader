@@ -4,7 +4,8 @@ Machine learning project that attempts to grade essays written by non-native Eng
 ## Dependencies
 
 * nltk
-* scipy
+* * cmudict
+* * averaged_perceptron_tagger
 * numpy
 * pandas
 * matplotlib

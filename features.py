@@ -8,8 +8,9 @@ import cleandata
 
 def get_essay_data():
     if not os.path.exists("./data/30_min_essays") and not os.path.exists("./data/30_min_essays"):
-        print("Cleaning data.")
+        print("Cleaning data...")
         cleandata.clean_data()
+        print("Cleaning complete.")
     else:
         print("Data already cleaned.")
 
@@ -165,13 +166,13 @@ def feat21():
 
 def write_feature_data():
     with open(os.path.join('./data', "feature_data.tsv"), "w+") as tsvfile:
-        tsvfile.write("IDNUM\tSCORE\t")
+        tsvfile.write("IDNUM\t")
         for i in range (1, 22):
             tsvfile.write(f'FEAT{i}\t')
-        tsvfile.write("\n")
+        tsvfile.write("SCORE\n")
 
         for essay_filename in os.listdir("./data/30_min_essays"):
-            if not essay_filename == "Icon":
+            if essay_filename[0] == "3":
                 f = open(os.path.join('./data/30_min_essays', essay_filename), "r")
                 raw_text = f.read()
 
@@ -182,10 +183,9 @@ def write_feature_data():
                 pos_tagged = nltk.pos_tag(tokens)
 
                 student_id = essay_filename[3:8]
-                score = essay_filename[9:13]
+                score = float(essay_filename[9:13])
 
                 tsvfile.write(f'{student_id}\t')
-                tsvfile.write(f'{score}\t')
                 tsvfile.write(f'{feat1(lines):.4f}\t')
                 tsvfile.write(f'{feat2(sentences):.4f}\t')
                 tsvfile.write(f'{feat3(pos_tagged, sentences):.4f}\t')
@@ -201,12 +201,13 @@ def write_feature_data():
                 tsvfile.write(f'{feat13():.4f}\t')
                 tsvfile.write(f'{feat14():.4f}\t')
                 tsvfile.write(f'{feat15(pos_tagged):.4f}\t')
-                tsvfile.write(f'{feat16(pos_tagged, sentences):.4f}\n')
+                tsvfile.write(f'{feat16(pos_tagged, sentences):.4f}\t')
                 tsvfile.write(f'{feat17():.4f}\t')
                 tsvfile.write(f'{feat18():.4f}\t')
                 tsvfile.write(f'{feat19():.4f}\t')
                 tsvfile.write(f'{feat20():.4f}\t')
-                tsvfile.write(f'{feat21():.4f}\n')
+                tsvfile.write(f'{feat21():.4f}\t')
+                tsvfile.write(f'{int(round(score, 0))}\n')
 
         print("Analysis finished.")
 
