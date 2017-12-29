@@ -5,25 +5,27 @@ import nltk
 import cleandata
 
 def get_essay_data():
-    if not os.path.isdir("10_min_essays") and not os.path.isdir("30_min_essays"):
+    if not os.path.exists("./data/30_min_essays") and not os.path.exists("./data/30_min_essays"):
+        print("Cleaning data.")
         cleandata.clean_data()
+    else:
+        print("Data already cleaned.")
 
 def feat1():
-    return 0
+    return 1
 
 def feat2():
-    return 0
+    return 2
 
 def feat3():
-    return 0
+    return 3
 
 def write_feature_data():
-    with open('feature_data.tsv', "w+") as tsvfile:
-        tsvfile.write("STUDENT ID\tSCORE\tFEAT1\tFEAT2\tFEAT3\n")
+    with open(os.path.join('./data', "feature_data.tsv"), "w+") as tsvfile:
+        tsvfile.write("IDNUM\tSCORE\tFEAT1\tFEAT2\tFEAT3\n")
 
-
-        for essay_filename in os.listdir('30_min_essays'):
-            f = open(os.path.join('./30_min_essays', essay_filename), "r")
+        for essay_filename in os.listdir("./data/30_min_essays"):
+            f = open(os.path.join('./data/30_min_essays', essay_filename), "r")
             raw_text = f.read()
 
             tokens = nltk.word_tokenize(raw_text)
@@ -31,8 +33,8 @@ def write_feature_data():
             lines = raw_text.splitlines()
             sentences = nltk.sent_tokenize(raw_text)
 
-            student_id = essay_filename[3:7]
-            score = essay_filename[9:12]
+            student_id = essay_filename[3:8]
+            score = essay_filename[9:13]
 
             tsvfile.write(f'{student_id}\t')
             tsvfile.write(f'{score}\t')

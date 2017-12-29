@@ -12,7 +12,7 @@ Machine learning project that attempts to grade essays written by non-native Eng
 
 ## Set-up
 
-Run the file "machinelearn.py"
+Run the file "essay_grader.py"
 
 ## Note to Dr. Reynolds
 
