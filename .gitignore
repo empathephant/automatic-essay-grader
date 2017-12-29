@@ -104,3 +104,6 @@ ENV/
 30_min_essays/
 10_min_essays/
 feature_data.tsv
+data_description.txt
+algorithm_eval.txt
+plots/

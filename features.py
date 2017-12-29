@@ -173,8 +173,8 @@ def write_feature_data():
 
         for essay_filename in os.listdir("./data/30_min_essays"):
             if essay_filename[0] == "3":
-                f = open(os.path.join('./data/30_min_essays', essay_filename), "r")
-                raw_text = f.read()
+                with open(os.path.join('./data/30_min_essays', essay_filename), "r") as f:
+                    raw_text = f.read()
 
                 tokens = nltk.word_tokenize(raw_text)
                 text = nltk.Text(tokens)
@@ -208,8 +208,6 @@ def write_feature_data():
                 tsvfile.write(f'{feat20():.4f}\t')
                 tsvfile.write(f'{feat21():.4f}\t')
                 tsvfile.write(f'{int(round(score, 0))}\n')
-
-        print("Analysis finished.")
 
 def get_feature_data():
     get_essay_data()
