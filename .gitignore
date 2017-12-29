@@ -103,3 +103,4 @@ ENV/
 # essay data
 30_min_essays/
 10_min_essays/
+feature_data.tsv
