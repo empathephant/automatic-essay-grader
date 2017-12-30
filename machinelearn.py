@@ -143,6 +143,14 @@ def evaluate_algorithms(datasets):
                 report = f'{name}: {cv_results.mean()} ({cv_results.std()})\n'
                 f.write(report)
 
+        # Compare algorithms
+        fig = plt.figure()
+        fig.suptitle('Algorithm Comparison')
+        ax = fig.add_subplot(111)
+        plt.boxplot(results)
+        ax.set_xticklabels(names)
+        plt.savefig(os.path.join('./data/plots', "compare_algorithms.png"))
+
 def build_machine_learning():
     dataset = load_data()
 
