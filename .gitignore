@@ -106,4 +106,6 @@ ENV/
 feature_data.tsv
 data_description.txt
 algorithm_eval.txt
+accuracy_scores.txt
 plots/
+Icon

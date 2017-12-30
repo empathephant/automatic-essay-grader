@@ -31,8 +31,9 @@ def load_data():
     # Load dataset
     url = "./data/feature_data.tsv"
     names = ['FEAT1', 'FEAT2', 'FEAT3', 'FEAT4', 'FEAT5', 'FEAT6', 'FEAT7', 'FEAT8', 'FEAT9', 'FEAT10',
-             'FEAT11', 'FEAT12', 'FEAT13', 'FEAT14', 'FEAT15', 'FEAT16', 'FEAT17', 'FEAT18', 'FEAT19', 'FEAT20',
-             'FEAT21', 'SCORE']
+             'FEAT11', 'FEAT12', 'FEAT13', 'FEAT14', 'FEAT15', 'FEAT16', 'FEAT17', 'FEAT18',
+             #  'FEAT19', 'FEAT20', 'FEAT21',
+             'SCORE']
     dataset = pandas.read_csv(url, sep='\t', names=names, skiprows=[0])
     return dataset
 
@@ -45,27 +46,28 @@ def print_data_info(dataset):
         print(f'Writing data description to {descrip_filename}...')
 
         with open(descrip_filename, "w+") as f:
-            f.write("##############################################\n")
+            line_break = "\n##############################################\n"
+            f.write(line_break)
 
             # shape
             f.write("Shape of dataset:\n\n")
             f.write(repr(dataset.shape))
-            f.write("\n##############################################\n")
+            f.write(line_break)
 
             # head
             f.write("Head of dataset:\n\n")
             f.write(repr(dataset.head(20)))
-            f.write("\n##############################################\n")
+            f.write(line_break)
 
-            #descriptions
+            # descriptions
             f.write("Description of dataset:\n\n")
             f.write(repr(dataset.describe()))
-            f.write("\n##############################################\n")
+            f.write(line_break)
 
             # class distribution
             f.write("Score distribution for dataset:\n\n")
             f.write(repr(dataset.groupby('SCORE').size()))
-            f.write("\n##############################################\n")
+            f.write(line_break)
 
         print("Description complete.")
 
@@ -96,11 +98,11 @@ def create_visualizations(dataset):
 
 def create_validation_set(dataset):
     print("Creating validation set...")
-    #Split out validation dataset
+    # Split out validation dataset
     value_array = dataset.values
-    X = value_array[:, 0:21]
-    Y = value_array[:, 21]
-    validation_size = 0.30
+    X = value_array[:, 0:18]
+    Y = value_array[:, 18]
+    validation_size = 0.20
     seed = 42
     datasets = {}
     X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(
@@ -121,7 +123,7 @@ def evaluate_algorithms(datasets):
         seed = 42
         scoring = 'accuracy'
 
-        #Spot check algoritms
+        # Spot check algoritms
         models = []
         models.append(('LR', LogisticRegression()))
         models.append(('LDA', LinearDiscriminantAnalysis()))
@@ -130,7 +132,7 @@ def evaluate_algorithms(datasets):
         models.append(('NB', GaussianNB()))
         models.append(('SVM', SVC()))
 
-        #Evaluate each model in turn
+        # Evaluate each model in turn
         results = []
         names = []
 
@@ -151,6 +153,34 @@ def evaluate_algorithms(datasets):
         ax.set_xticklabels(names)
         plt.savefig(os.path.join('./data/plots', "compare_algorithms.png"))
 
+def check_validation_set(datasets):
+    filename = os.path.join('./data', "accuracy_scores.txt")
+
+    if os.path.isfile(filename):
+        print("Accuracy already evaluated.")
+    else:
+        print("Evaluating accuracy of LR algorithm...")
+        # Make predictions on validation dataset
+        lr = LogisticRegression()
+        lr.fit(datasets['X_tr'], datasets['Y_tr'])
+        predictions = lr.predict(datasets['X_val'])
+
+        with open(filename, "w+") as f:
+            line_break = "\n##############################################\n"
+            f.write(line_break)
+
+            f.write('Accuracy score:\n')
+            f.write(repr(accuracy_score(datasets['Y_val'], predictions)))
+            f.write(line_break)
+
+            f.write('Confusion matrix:\n')
+            f.write(repr(confusion_matrix(datasets['Y_val'], predictions)))
+            f.write(line_break)
+
+            f.write('Classification report:\n')
+            f.write(repr(classification_report(datasets['Y_val'], predictions)))
+            f.write(line_break)
+
 def build_machine_learning():
     dataset = load_data()
 
@@ -158,4 +188,6 @@ def build_machine_learning():
     create_visualizations(dataset)
     datasets = create_validation_set(dataset)
     evaluate_algorithms(datasets)
+
+    check_validation_set(datasets)
 
